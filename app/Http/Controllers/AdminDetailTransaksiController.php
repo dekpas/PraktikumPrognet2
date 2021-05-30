@@ -35,10 +35,26 @@ class AdminDetailTransaksiController extends Controller
         if($request->status == 1){
             $transaksi->status = 'canceled';
             $transaksi->save();
+
+            $data= [
+                'nama'=> 'admin',
+                'pesan'=> 'Transaksi Batal'
+            ];
+            $endcode = json_encode($data);
+            $admin->createnotifyuser($endcode); 
+
             return redirect('/transaksi/detail/'.$request->id);
         }elseif($request->status == 3){
             $transaksi->status = 'verified';
             $transaksi->save();
+
+            $admin= User::find(1);
+            $data= [
+                'nama'=> 'admin',
+                'pesan'=> 'Transaksi Diterima'
+            ];
+            $endcode = json_encode($data);
+            $admin->createnotifyuser($endcode); 
 
             foreach($transaksi->transaction_detail as $item){
                 $produk = Product::find($item->product_id);
@@ -50,15 +66,42 @@ class AdminDetailTransaksiController extends Controller
         }elseif($request->status == 2){
             $transaksi->status = 'success';
             $transaksi->save();
+
+            $admin= User::find(1);
+            $data= [
+                'nama'=> 'admin',
+                'pesan'=> 'Transaksi Berhasil'
+            ];
+            $endcode = json_encode($data);
+            $admin->createnotifyuser($endcode);
+
             return redirect('/transaksi/detail/'.$request->id);
         }elseif($request->status == 4){
             $transaksi->status = 'indelivery';
             $transaksi->save();
+
+            $admin= User::find(1);
+            $data= [
+                'nama'=> 'admin',
+                'pesan'=> 'Transaksi Belum Terkirim'
+            ];
+            $endcode = json_encode($data);
+            $admin->createnotifyuser($endcode); 
+
             return redirect('admin/transaksi/detail/'.$request->id);
         
         }else{
             $transaksi->status = 'delivered';
             $transaksi->save();
+
+            $admin= User::find(1);
+            $data= [
+                'nama'=> 'admin',
+                'pesan'=> 'Transaksi Terkirim'
+            ];
+            $endcode = json_encode($data);
+            $admin->createnotifyuser($endcode);
+
             return redirect('admin/transaksi/detail/'.$request->id);
         }
     }
